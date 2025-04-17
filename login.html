@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>เข้าสู่ระบบ / สมัครสมาชิก</title>
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+      background-color: #f1fff0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #388e3c;
+    }
+
+    .input-wrapper {
+      position: relative;
+      width: 90%;
+      margin: 10px auto;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    .eye-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 18px;
+      color: #555;
+    }
+
+    button {
+      background-color: #66bb6a;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #43a047;
+    }
+
+    .toggle {
+      color: #388e3c;
+      margin-top: 10px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .toggle:hover {
+      text-decoration: underline;
+    }
+
+    .error {
+      color: red;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2 id="formTitle">เข้าสู่ระบบ</h2>
+  <input type="text" id="username" placeholder="ชื่อผู้ใช้" required>
+
+  <div class="input-wrapper">
+    <input type="password" id="password" placeholder="รหัสผ่าน" required>
+    <span class="eye-btn" onclick="togglePassword('password', this)">👁️</span>
+  </div>
+
+  <div class="input-wrapper" id="confirmWrapper" style="display: none;">
+    <input type="password" id="confirmPassword" placeholder="ยืนยันรหัสผ่าน">
+    <span class="eye-btn" onclick="togglePassword('confirmPassword', this)">👁️</span>
+  </div>
+
+  <div class="error" id="errorMessage"></div>
+  <button onclick="handleSubmit()">ตกลง</button>
+  <div class="toggle" onclick="toggleForm()">ยังไม่มีบัญชี? สมัครสมาชิก</div>
+</div>
+
+<script>
+  let isLogin = true;
+
+  function toggleForm() {
+    isLogin = !isLogin;
+    document.getElementById('formTitle').textContent = isLogin ? 'เข้าสู่ระบบ' : 'สมัครสมาชิก';
+    document.querySelector('.toggle').textContent = isLogin ? 'ยังไม่มีบัญชี? สมัครสมาชิก' : 'มีบัญชีอยู่แล้ว? เข้าสู่ระบบ';
+    document.getElementById('confirmWrapper').style.display = isLogin ? 'none' : 'block';
+    document.getElementById('errorMessage').textContent = '';
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('confirmPassword').value = '';
+  }
+
+  function togglePassword(fieldId, eyeIcon) {
+    const field = document.getElementById(fieldId);
+    if (field.type === "password") {
+      field.type = "text";
+      eyeIcon.textContent = "🙈";
+    } else {
+      field.type = "password";
+      eyeIcon.textContent = "👁️";
+    }
+  }
+
+  function handleSubmit() {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const confirmPassword = document.getElementById('confirmPassword').value;
+  const errorBox = document.getElementById('errorMessage');
+
+  if (username === "" || password === "") {
+    errorBox.textContent = "กรุณากรอกข้อมูลให้ครบถ้วน";
+    return;
+  }
+
+  let users = JSON.parse(localStorage.getItem("users")) || {};
+
+  if (!isLogin) {
+  if (users[username]) {
+    errorBox.textContent = "ชื่อนี้มีผู้ใช้แล้ว กรุณาใช้ชื่ออื่น";
+    return;
+  }
+  if (password !== confirmPassword) {
+    errorBox.textContent = "รหัสผ่านทั้งสองช่องไม่ตรงกัน";
+    return;
+  }
+
+  // ตั้งค่าผู้ใช้ใหม่
+  users[username] = {
+    password: password,
+    coins: 0,
+    score: 0,
+    profileImage: "stupid.jpg"  // รูปโปรไฟล์เริ่มต้น
+  };
+
+  localStorage.setItem("users", JSON.stringify(users));
+  localStorage.setItem("userName", username);
+  localStorage.setItem("userCoins", 0); // ✅ เพิ่ม coin ไว้ใน localStorage ด้วย
+
+  window.location.href = "index.html"; // กลับหน้าแรก
+}
+
+ else {
+  if (!users[username] || users[username].password !== password) {
+    errorBox.textContent = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+    return;
+  }
+
+  localStorage.setItem("userName", username);
+  localStorage.setItem("userCoins", users[username].coins);
+
+  // ตั้งค่าผู้ใช้ให้มีโปรไฟล์เริ่มต้นถ้ายังไม่มี
+  if (!users[username].profileImage) {
+    users[username].profileImage = "defaultProfile.png";
+    localStorage.setItem("users", JSON.stringify(users));
+  }
+
+  window.location.href = "index.html"; // ✅ เพิ่มบรรทัดนี้เพื่อกลับหน้าแรก
+}
+
+}
+
+</script>
+
+</body>
+</html>
