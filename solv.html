@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>เลือกหัวข้อฟิสิกส์</title>
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+      background-color: #e8f5e9;
+      padding: 40px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #2e7d32;
+      margin-bottom: 30px;
+    }
+
+    .topic-btn {
+      display: block;
+      background-color: #a5d6a7;
+      color: #1b5e20;
+      padding: 15px;
+      margin: 10px auto;
+      border-radius: 12px;
+      border: none;
+      font-size: 18px;
+      width: 250px;
+      cursor: pointer;
+      box-shadow: 2px 2px 8px #c8e6c9;
+      transition: 0.3s;
+    }
+
+    .topic-btn:hover {
+      background-color: #81c784;
+    }
+
+    .disabled {
+      background-color: #cfd8dc;
+      color: #757575;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>คุณอยากทำโจทย์เรื่องอะไร?</h2>
+
+  <button class="topic-btn" onclick="selectTopic('motion')" id="btn-motion">🚶 การเคลื่อนที่</button>
+  <button class="topic-btn" onclick="selectTopic('force')" id="btn-force">💪 แรง</button>
+  <button class="topic-btn" onclick="selectTopic('energy')" id="btn-energy">⚡ พลังงาน</button>
+  <button class="topic-btn" onclick="selectTopic('mechanics')" id="btn-mechanics">⚙️ เครื่องกล</button>
+  <button class="topic-btn" onclick="selectTopic('electricity')" id="btn-electricity">🔌 ไฟฟ้าเบื้องต้น</button>
+
+  <script>
+    const userName = localStorage.getItem("userName");
+    const buttons = document.querySelectorAll(".topic-btn");
+
+    if (!userName) {
+      buttons.forEach(btn => {
+        btn.classList.add("disabled");
+        btn.onclick = () => {
+          alert("กรุณาเข้าสู่ระบบก่อนทำโจทย์นะ!");
+        };
+      });
+    }
+
+    function selectTopic(topic) {
+      if (!userName) return; // ป้องกันซ้ำ
+      localStorage.setItem("selectedTopic", topic);
+      window.location.href = "selectDifficulty.html";
+    }
+  </script>
+
+</body>
+</html>

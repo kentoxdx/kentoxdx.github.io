@@ -81,7 +81,7 @@
 
   <div class="profile-container">
     <!-- รูปโปรไฟล์ -->
-    <img id="profileImage" src="stupid.jpg" alt="โปรไฟล์" style="border-radius: 50%; width: 100px; height: 100px;">
+    <img id="profileImage" src="stupid.png" alt="โปรไฟล์" style="border-radius: 50%; width: 100px; height: 100px;">
 
     <p>ชื่อผู้ใช้: <span id="userName"></span></p>
     <p>เหรียญที่คุณมี: <span id="userCoins"></span></p>
@@ -103,7 +103,7 @@
       document.getElementById("userCoins").textContent = userCoins;
 
       // แสดงรูปโปรไฟล์
-      const profileImage = userProfile.profileImage || "stupid.jpg"; 
+      const profileImage = userProfile.profileImage || "stupid.png"; 
       document.getElementById("profileImage").src = profileImage;
     } else {
       // ถ้าผู้ใช้ยังไม่ได้ล็อกอิน ให้ไปหน้าเข้าสู่ระบบ

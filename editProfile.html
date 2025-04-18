@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>แก้ไขโปรไฟล์</title>
+  <style>
+    .file-label {
+  display: inline-block;
+  background-color: #66bb6a;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+.file-label:hover {
+  background-color: #43a047;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+    body {
+      font-family: 'Prompt', sans-serif;
+      background-color: #f1fff0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px;
+    }
+
+    h1 {
+      color: #388e3c;
+      margin-bottom: 30px;
+    }
+
+    .profile-container {
+      background-color: #a5d6a7;
+      border-radius: 20px;
+      padding: 30px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 2px 2px 10px #c8e6c9;
+      text-align: center;
+    }
+
+    .profile-container input {
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      margin: 10px 0;
+      width: 90%;
+      font-size: 16px;
+    }
+
+    .profile-container button {
+      background-color: #66bb6a;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .profile-container button:hover {
+      background-color: #43a047;
+    }
+
+    .preview {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 10px 0;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>แก้ไขโปรไฟล์</h1>
+
+  <div class="profile-container">
+    <img id="previewImage" src="stupid.png" class="preview" alt="โปรไฟล์">
+
+<input type="text" id="newUsername" placeholder="ชื่อผู้ใช้ใหม่ (เว้นว่างถ้าไม่เปลี่ยน)">
+
+<!-- ปุ่มเลือกไฟล์แบบน่ารัก -->
+<label for="uploadImage" class="file-label">เลือกรูปจากเครื่อง</label>
+<input type="file" id="uploadImage" accept="image/*">
+
+<div class="error" id="errorMsg"></div>
+<button onclick="saveProfile()">บันทึกการเปลี่ยนแปลง</button>
+
+  </div>
+
+  <script>
+    const currentUser = localStorage.getItem("userName");
+    const users = JSON.parse(localStorage.getItem("users")) || {};
+    const userProfile = users[currentUser];
+
+    if (!currentUser || !userProfile) {
+      alert("กรุณาเข้าสู่ระบบก่อน");
+      window.location.href = "login.html";
+    }
+
+    // แสดงรูปโปรไฟล์เดิม
+    document.getElementById("previewImage").src = userProfile.profileImage || "stupid.png";
+
+    // เมื่อผู้ใช้เลือกไฟล์รูปใหม่
+    document.getElementById("uploadImage").addEventListener("change", function () {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById("previewImage").src = e.target.result;
+          document.getElementById("previewImage").dataset.base64 = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function saveProfile() {
+      const newUsername = document.getElementById("newUsername").value.trim();
+      const errorBox = document.getElementById("errorMsg");
+      const newImageBase64 = document.getElementById("previewImage").dataset.base64 || userProfile.profileImage;
+
+      if (newUsername && newUsername !== currentUser) {
+        if (users[newUsername]) {
+          errorBox.textContent = "ชื่อผู้ใช้นี้มีคนใช้แล้ว";
+          return;
+        }
+        users[newUsername] = { ...userProfile, profileImage: newImageBase64 };
+        delete users[currentUser];
+        localStorage.setItem("userName", newUsername);
+      } else {
+        users[currentUser].profileImage = newImageBase64;
+      }
+
+      localStorage.setItem("users", JSON.stringify(users));
+      localStorage.setItem("userCoins", users[newUsername || currentUser].coins);
+      alert("บันทึกสำเร็จ!");
+      window.location.href = "profile.html";
+    }
+  </script>
+
+</body>
+</html>

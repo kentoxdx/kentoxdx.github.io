@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>โจทย์การเคลื่อนที่ - ง่าย</title>
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+      background-color: #f1fff0;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .question-box {
+      background-color: #a5d6a7;
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      font-size: 18px;
+      box-shadow: 2px 2px 10px #c8e6c9;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      width: 60%;
+      font-size: 16px;
+    }
+
+    button {
+      margin-top: 10px;
+      background-color: #66bb6a;
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #43a047;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .hint {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 14px;
+      color: #444;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="hint">
+    * ใส่คำตอบพร้อมหน่วย เช่น 10.0 m/s หรือ 5.0 s<br>
+    * ถ้าเป็นเลขทศนิยมให้ใส่เพียง 1 ตำแหน่ง
+  </div>
+
+  <h1>🎯 โจทย์การเคลื่อนที่ (ระดับง่าย)</h1>
+
+  <div class="question-box" id="questionText">
+    <!-- คำถามจะมาแสดงตรงนี้ -->
+  </div>
+
+  <input type="text" id="userAnswer" placeholder="พิมพ์คำตอบ เช่น 10.0 m/s">
+  <br>
+  <button onclick="checkAnswer()">ตรวจคำตอบ</button>
+  
+
+  <div class="result" id="resultText"></div>
+
+  <script>
+    let currentAnswer = "";
+  
+    function generateQuestion() {
+      const type = Math.floor(Math.random() * 2); // 0 = หาเวลา, 1 = หาอัตราเร็ว
+      let distance, speed, time, question;
+  
+      if (type === 0) {
+        distance = Math.floor(Math.random() * 100) + 10;
+        speed = Math.floor(Math.random() * 20) + 1;
+        time = (distance / speed).toFixed(1); // ตัดเหลือ 1 ตำแหน่ง
+        question = `ถ้าวัตถุเคลื่อนที่ด้วยอัตราเร็ว ${speed} m/s เป็นระยะทาง ${distance} m จะใช้เวลากี่วินาที?`;
+        currentAnswer = `${time} s`;
+      } else {
+        time = Math.floor(Math.random() * 20) + 1;
+        distance = Math.floor(Math.random() * 100) + 10;
+        speed = (distance / time).toFixed(1);
+        question = `ถ้าวัตถุเคลื่อนที่เป็นระยะทาง ${distance} m ภายในเวลา ${time} s อัตราเร็วเฉลี่ยเป็นเท่าไร?`;
+        currentAnswer = `${speed} m/s`;
+      }
+  
+      document.getElementById("questionText").textContent = question;
+      document.getElementById("resultText").textContent = "";
+      document.getElementById("userAnswer").value = "";
+    }
+  
+    function checkAnswer() {
+      const userAns = document.getElementById("userAnswer").value.trim().toLowerCase();
+      const correctAns = currentAnswer.toLowerCase();
+  
+      if (userAns === correctAns) {
+        document.getElementById("resultText").textContent = "✅ คำตอบถูกต้อง! +10 เหรียญ";
+        document.getElementById("resultText").style.color = "green";
+  
+        // เพิ่มเหรียญ
+        const currentUser = localStorage.getItem("userName");
+        const users = JSON.parse(localStorage.getItem("users") || "{}");
+        if (currentUser && users[currentUser]) {
+          users[currentUser].coins = (users[currentUser].coins || 0) + 10;
+          localStorage.setItem("users", JSON.stringify(users));
+          localStorage.setItem("userCoins", users[currentUser].coins);
+        }
+  
+      } else {
+        document.getElementById("resultText").textContent = "❌ คำตอบผิด ลองใหม่!";
+        document.getElementById("resultText").style.color = "red";
+      }
+  
+      // สุ่มโจทย์ใหม่ทันทีหลังตรวจ
+      setTimeout(generateQuestion, 2000);
+    }
+  
+    // เริ่มต้น
+    generateQuestion();
+  </script>
+  
+  
+
+</body>
+</html>

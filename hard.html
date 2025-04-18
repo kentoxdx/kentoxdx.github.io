@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>โจทย์การเคลื่อนที่ - ยาก</title>
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+      background-color: #f1fff0;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .question-box {
+      background-color: #e57373;
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      font-size: 18px;
+      box-shadow: 2px 2px 10px #ffccbc;
+    }
+
+    .formula-selection {
+      margin-top: 20px;
+    }
+
+    .formula-button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      background-color: #ffb74d;
+      color: white;
+    }
+
+    .formula-button:hover {
+      background-color: #e57f17;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      width: 60%;
+      font-size: 16px;
+    }
+
+    button {
+      margin-top: 10px;
+      background-color: #66bb6a;
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #43a047;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .timer {
+      font-size: 24px;
+      font-weight: bold;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+    <p id="selectedFormulaText" style="margin-top: 10px; font-weight: bold; color: #333;"></p>
+
+
+  <h1>🎯 โจทย์การเคลื่อนที่ (ระดับยาก)</h1>
+
+  <div class="question-box" id="questionText">
+    <!-- คำถามจะมาแสดงตรงนี้ -->
+  </div>
+
+  <div class="formula-selection">
+    <button class="formula-button" onclick="selectFormula('v = u + at')">v = u + at</button>
+    <button class="formula-button" onclick="selectFormula('s = ut + 1/2 a t²')">s = ut + 1/2 a t²</button>
+    <button class="formula-button" onclick="selectFormula('v² = u² + 2as')">v² = u² + 2as</button>
+    <button class="formula-button" onclick="selectFormula('u = v - at')">u = v - at</button>
+    <button class="formula-button" onclick="selectFormula('s = (u + v) / 2 × t')">s = (u + v) / 2 × t</button>
+  </div>
+
+  <input type="text" id="userAnswer" placeholder="พิมพ์คำตอบ เช่น 10.0 m/s">
+  <br>
+  <button onclick="checkAnswer()">ตรวจคำตอบ</button>
+
+  <div class="result" id="resultText"></div>
+
+  <div class="timer" id="timerText">30</div>
+
+  <script>
+    let currentAnswer = "";
+    let selectedFormula = "";
+    let timeLeft = 30;
+    let timerInterval;
+
+    function selectFormula(formula) {
+  selectedFormula = formula;
+  document.getElementById("selectedFormulaText").textContent = "📘 สูตรที่เลือก: " + formula;
+   }
+
+  
+    function generateQuestion() {
+  clearInterval(timerInterval); // 💥 หยุด timer เก่าก่อน
+  const type = Math.floor(Math.random() * 3);
+  let distance, speed, time, acceleration, question;
+
+  if (type === 0) {
+    speed = Math.floor(Math.random() * 20) + 10;
+    acceleration = Math.floor(Math.random() * 10) + 1;
+    time = Math.floor(Math.random() * 10) + 2;
+    currentAnswer = `${speed + acceleration * time} m/s`;
+    question = `ถ้าวัตถุมีความเร็วต้น ${speed} m/s และความเร่ง ${acceleration} m/s² ผ่านไป ${time} วินาที คำนวณหาความเร็วปลาย (v)?`;
+  } else if (type === 1) {
+    speed = Math.floor(Math.random() * 10) + 5;
+    acceleration = Math.floor(Math.random() * 5) + 1;
+    time = Math.floor(Math.random() * 10) + 3;
+    currentAnswer = `${(speed * time + 0.5 * acceleration * time * time).toFixed(1)} m`;
+    question = `ถ้าวัตถุมีความเร็วต้น ${speed} m/s และความเร่ง ${acceleration} m/s² เคลื่อนที่เป็นระยะ ${time} วินาที คำนวณหาระยะทาง (s)?`;
+  } else {
+    speed = Math.floor(Math.random() * 30) + 20;
+    acceleration = Math.floor(Math.random() * 5) + 2;
+    time = Math.floor(Math.random() * 10) + 4;
+    currentAnswer = `${(speed - acceleration * time).toFixed(1)} m/s²`;
+    question = `ถ้าวัตถุมีความเร็วปลาย ${speed} m/s และเวลา ${time} วินาที คำนวณหาความเร่ง (a)?`;
+  }
+
+  document.getElementById("questionText").textContent = question;
+  document.getElementById("resultText").textContent = "";
+  document.getElementById("userAnswer").value = "";
+  timeLeft = 30;
+  document.getElementById("timerText").textContent = timeLeft;
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(timerInterval); // 💥 ป้องกัน timer ซ้อนกัน
+  timerInterval = setInterval(function () {
+    if (timeLeft > 0) {
+      timeLeft--;
+      document.getElementById("timerText").textContent = timeLeft;
+    } else {
+      clearInterval(timerInterval);
+      document.getElementById("resultText").textContent = "⏱️ เวลาหมด! โจทย์ใหม่กำลังสุ่ม...";
+      document.getElementById("resultText").style.color = "black";
+      setTimeout(generateQuestion, 2000);
+    }
+  }, 1000);
+}
+
+function checkAnswer() {
+  const userAns = document.getElementById("userAnswer").value.trim().toLowerCase();
+  const correctAns = currentAnswer.toLowerCase();
+
+  if (selectedFormula === "") {
+    document.getElementById("resultText").textContent = "❗ กรุณาเลือกสูตรก่อน!";
+    document.getElementById("resultText").style.color = "orange";
+  } else if (userAns === correctAns) {
+    document.getElementById("resultText").textContent = "✅ คำตอบถูกต้อง! +30 เหรียญ";
+    document.getElementById("resultText").style.color = "green";
+
+    const currentUser = localStorage.getItem("userName");
+    const users = JSON.parse(localStorage.getItem("users") || "{}");
+    if (currentUser && users[currentUser]) {
+      users[currentUser].coins = (users[currentUser].coins || 0) + 30;
+      localStorage.setItem("users", JSON.stringify(users));
+      localStorage.setItem("userCoins", users[currentUser].coins);
+    }
+  } else {
+    document.getElementById("resultText").textContent = "❌ คำตอบผิด ลองใหม่!";
+    document.getElementById("resultText").style.color = "red";
+  }
+
+  // ✅ เคลียร์ timer ก่อนสุ่มโจทย์ใหม่
+  clearInterval(timerInterval);
+  setTimeout(generateQuestion, 2000);
+}
+
+
+   generateQuestion();
+
+
+  </script>
+
+</body>
+</html>

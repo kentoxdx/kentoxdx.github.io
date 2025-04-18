@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>เลือกระดับความยาก</title>
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+      background-color: #e8f5e9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+
+    h1 {
+      color: #2e7d32;
+      margin-bottom: 40px;
+    }
+
+    .difficulty-button {
+      padding: 20px 40px;
+      border-radius: 20px;
+      border: none;
+      font-size: 20px;
+      margin: 10px;
+      cursor: pointer;
+      color: white;
+      width: 250px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .difficulty-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .easy { background-color: #81c784; }     /* เขียวอ่อน */
+    .medium { background-color: #ffb74d; }   /* ส้ม */
+    .hard { background-color: #e57373; }     /* แดง */
+
+    .back-button {
+      margin-top: 30px;
+      background-color: #a5d6a7;
+      color: #1b5e20;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .back-button:hover {
+      background-color: #81c784;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>เลือกระดับความยากของโจทย์</h1>
+
+  <button class="difficulty-button easy" onclick="selectDifficulty('easy')">🟢 ง่าย (10 เหรียญ)</button>
+  <button class="difficulty-button medium" onclick="selectDifficulty('medium')">🟡 กลาง (20 เหรียญ)</button>
+  <button class="difficulty-button hard" onclick="selectDifficulty('hard')">🔴 ยาก (30 เหรียญ)</button>
+
+  <button class="back-button" onclick="goBack()">⬅️ กลับไปเลือกหัวข้อ</button>
+
+  <script>
+    function selectDifficulty(level) {
+      // เปลี่ยนไปยังหน้าโหมดที่เลือก
+      if (level === 'easy') {
+        window.location.href = "easy.html";  // โหมดง่าย
+      } else if (level === 'medium') {
+        window.location.href = "medium.html";  // โหมดกลาง
+      } else if (level === 'hard') {
+        window.location.href = "hard.html";  // โหมดยาก
+      }
+    }
+
+    function goBack() {
+      window.location.href = "solv.html"; // กลับไปที่หน้าหัวข้อ
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>จัดการผู้ใช้</title>
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+      background-color: #f1fff0;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .container {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h2 {
+      color: #388e3c;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #66bb6a;
+      color: white;
+    }
+
+    input[type="number"] {
+      width: 100px;
+      padding: 5px;
+      border-radius: 5px;
+    }
+
+    button {
+      background-color: #66bb6a;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #43a047;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>🔐 จัดการผู้ใช้ (Admin)</h2>
+  <table id="userTable">
+    <thead>
+      <tr>
+        <th>ชื่อผู้ใช้</th>
+        <th>เหรียญ</th>
+        <th>แก้ไขเหรียญ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- ข้อมูลผู้ใช้จะถูกแสดงที่นี่ -->
+    </tbody>
+  </table>
+</div>
+
+<script>
+  // ตรวจสอบว่าเป็น admin หรือไม่
+  const currentUser = localStorage.getItem("userName");
+  if (currentUser !== "kenxd") {
+    alert("คุณไม่มีสิทธิ์เข้าถึงหน้านี้");
+    window.location.href = "index.html"; // ไปหน้าหลักถ้าไม่ใช่ admin
+  }
+
+  // ฟังก์ชันเพื่อดึงข้อมูลผู้ใช้ทั้งหมดจาก localStorage
+  function loadUsers() {
+    const users = JSON.parse(localStorage.getItem("users")) || {};
+    const userTableBody = document.getElementById("userTable").getElementsByTagName("tbody")[0];
+    userTableBody.innerHTML = ""; // เคลียร์ตารางก่อน
+
+    for (const username in users) {
+      const user = users[username];
+      const row = document.createElement("tr");
+      
+      // สร้างคอลัมน์ชื่อผู้ใช้
+      const nameCell = document.createElement("td");
+      nameCell.textContent = username;
+      
+      // สร้างคอลัมน์เหรียญ
+      const coinCell = document.createElement("td");
+      coinCell.textContent = user.coins;
+
+      // สร้างคอลัมน์แก้ไขเหรียญ
+      const editCell = document.createElement("td");
+      const coinInput = document.createElement("input");
+      coinInput.type = "number";
+      coinInput.value = user.coins;
+      coinInput.min = 0;
+      coinInput.addEventListener("change", function() {
+        user.coins = parseInt(coinInput.value) || 0;
+        users[username] = user;
+        localStorage.setItem("users", JSON.stringify(users));
+      });
+
+      const updateButton = document.createElement("button");
+      updateButton.textContent = "อัปเดต";
+      updateButton.onclick = function() {
+        localStorage.setItem("users", JSON.stringify(users));
+        alert("อัปเดตเหรียญของ " + username + " สำเร็จ!");
+      };
+
+      editCell.appendChild(coinInput);
+      editCell.appendChild(updateButton);
+
+      row.appendChild(nameCell);
+      row.appendChild(coinCell);
+      row.appendChild(editCell);
+      userTableBody.appendChild(row);
+    }
+  }
+
+  // โหลดผู้ใช้ทั้งหมดเมื่อหน้าโหลด
+  loadUsers();
+</script>
+
+</body>
+</html>

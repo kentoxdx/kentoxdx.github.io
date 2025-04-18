@@ -103,6 +103,20 @@
       background-color: #43a047;
     }
   </style>
+
+<style>
+    .profile-bar {
+      background-color: #c8e6c9;
+      color: #2e7d32;
+      padding: 12px 20px;
+      border-radius: 20px;
+      font-size: 18px;
+      margin-bottom: 20px;
+      box-shadow: 1px 1px 8px #a5d6a7;
+      display: none;
+    }
+  </style>
+  
 </head>
 <body>
 
@@ -111,13 +125,22 @@
 
   <h1>🌟 welcome to pysicgame 🌟</h1>
 
+  <div class="profile-bar" id="profileBar">
+    👤 <span id="displayName"></span> | 💰 <span id="displayCoins"></span> เหรียญ
+  </div>
+
+  <div id="adminLinkContainer"></div>
+
+  
+
   <!-- Profile Section ที่ย้ายไปมุมบนขวา -->
 <div class="profile-container" id="profileContainer">
     <!-- รูปโปรไฟล์ -->
-    <img src="stupid.jpg" alt="รูปโปรไฟล์" style="width: 120px; height: 120px; border-radius: 50%; margin-bottom: 15px; box-shadow: 2px 2px 8px #81c784;">
+    <img id="profileIcon" src="stupid.png" alt="รูปโปรไฟล์" style="width: 50px; height: 50px; border-radius: 50%;">
+
     
-    <p>ชื่อผู้ใช้: <span id="userName">ไม่ระบุ</span></p>
-    <p>เหรียญที่คุณมี: <span id="userCoins">0</span></p>
+    <p>Name: <span id="userName">ไม่ระบุ</span></p>
+    <p>coin: <span id="userCoins">0</span></p>
     <button onclick="goToProfile()">โปรไฟล์</button>
   </div>
   
@@ -157,7 +180,98 @@
         window.location.href = 'profile.html';
       }
     }
+
+
+  if (userName && userCoins) {
+    document.getElementById("userName").textContent = userName;
+    document.getElementById("userCoins").textContent = userCoins;
+    document.getElementById("displayName").textContent = userName;
+    document.getElementById("displayCoins").textContent = userCoins;
+    document.getElementById("profileBar").style.display = "block"; // แสดงโปรไฟล์
+  } else {
+    document.getElementById("userName").textContent = "ยังไม่ได้เข้าสู่ระบบ";
+    document.getElementById("userCoins").textContent = "0";
+  }
+
+
+// เรียกใช้ฟังก์ชันเพื่อรีเฟรชข้อมูลเมื่อเปิดหน้า
+refreshProfile();
+
+// ฟังก์ชันให้ตรวจสอบการเปลี่ยนแปลงของ localStorage และอัปเดตโปรไฟล์
+window.addEventListener('storage', function (event) {
+  if (event.key === 'userCoins' || event.key === 'userName') {
+    refreshProfile();
+  }
+});
+
   </script>
+  <script>
+    const currentUser = localStorage.getItem("userName");
+    const users = JSON.parse(localStorage.getItem("users") || "{}");
+  
+    if (currentUser && users[currentUser]) {
+      const profileImage = users[currentUser].profileImage || "stupid.png";
+      document.getElementById("profileIcon").src = profileImage;
+    }
+  </script>
+  <script>
+    if (userName && userCoins) {
+      document.getElementById("displayName").textContent = userName;
+      document.getElementById("displayCoins").textContent = userCoins;
+      document.getElementById("profileBar").style.display = "block";
+    }
+  </script>
+
+  <!-- ใส่ไว้ก่อนปิด </body> -->
+<script>
+   
+   
+if (currentUser === "kenxd") {
+  const link = document.createElement("a");
+  link.href = "user.html"; // ลิงก์ไปยังหน้า manage-users.html
+  link.textContent = "🔐 จัดการผู้ใช้";
+  document.body.appendChild(link);
+   }
+
+    
+  </script>
+
+<script>
+    // ฟังก์ชันรีเฟรชข้อมูลโปรไฟล์
+    function refreshProfile() {
+      const userName = localStorage.getItem("userName");
+      const userCoins = localStorage.getItem("userCoins");
+  
+      if (userName && userCoins) {
+        document.getElementById("userName").textContent = userName;
+        document.getElementById("userCoins").textContent = userCoins;
+        document.getElementById("displayName").textContent = userName;
+        document.getElementById("displayCoins").textContent = userCoins;
+        document.getElementById("profileBar").style.display = "block"; // แสดงโปรไฟล์
+      } else {
+        document.getElementById("userName").textContent = "ยังไม่ได้เข้าสู่ระบบ";
+        document.getElementById("userCoins").textContent = "0";
+      }
+    }
+  
+    // เรียกใช้ฟังก์ชันเพื่อรีเฟรชข้อมูลเมื่อเปิดหน้า
+    refreshProfile();
+  
+    // ฟังก์ชันให้ตรวจสอบการเปลี่ยนแปลงของ localStorage และอัปเดตโปรไฟล์
+    window.addEventListener('storage', function (event) {
+      if (event.key === 'userCoins' || event.key === 'userName') {
+        refreshProfile();
+      }
+    });
+  </script>
+  
+  
+
+  
+
+  
+  
+  
 
 </body>
 </html>

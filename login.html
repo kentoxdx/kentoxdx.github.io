@@ -158,7 +158,7 @@
     password: password,
     coins: 0,
     score: 0,
-    profileImage: "stupid.jpg"  // รูปโปรไฟล์เริ่มต้น
+    profileImage: "stupid.png"  // รูปโปรไฟล์เริ่มต้น
   };
 
   localStorage.setItem("users", JSON.stringify(users));
@@ -179,7 +179,7 @@
 
   // ตั้งค่าผู้ใช้ให้มีโปรไฟล์เริ่มต้นถ้ายังไม่มี
   if (!users[username].profileImage) {
-    users[username].profileImage = "defaultProfile.png";
+    users[username].profileImage = "stupid.png";
     localStorage.setItem("users", JSON.stringify(users));
   }
 
